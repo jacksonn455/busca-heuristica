@@ -23,7 +23,7 @@ e casa da pessoa.
 - O mapa da região é mostrado na figura a seguir
 
 --------------------
- ![](https://github.com/jacksonn455/toleranciaafalhas/blob/master/img/logo.png)
+ ![](https://github.com/jacksonn455/busca-heuristica/blob/master/img.png)
 --------------------
 
 - O mapa é formado por 5 tipos de terrenos: asfalto (região cinza escuro), paralelepípedo (região cinza
