@@ -13,7 +13,7 @@ def draw_tile(graph, id, style, width):
         if x2 == x1 - 1: r = "<"
         if y2 == y1 + 1: r = "v"
         if y2 == y1 - 1: r = "^"
-    if 'start' in style and id == style['start']: r = "A"    # Origem
+    if 'start' in style and id == style['start']: r = "X"    # Origem
     if 'goal' in style and id == style['goal']: r = "Z"      # Destino
     if 'path' in style and id in style['path']: r = "@"      # Caminho executo desde a Origem até o destino
     if id in graph.walls: r = "#" * width                    # Desenhando os muros ( Edificios )
@@ -51,21 +51,54 @@ class GridWithWeights(SquareGrid):
     def __init__(self, width, height):
         super().__init__(width, height)
         self.weights = {}
-    
+
     def cost(self, from_node, to_node):
         return self.weights.get(to_node, 1)
 
+
 matriz = [
-  ['G', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A'],
-  ['G', 'A', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-  ['G', 'A', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E'],
-  ['G', 'A', 'E', 'E', 'E', 'E', 'E', 'P', 'P', 'P'],
-  ['G', 'A', 'E', 'P', 'P', 'P', 'P', 'P', 'P', 'E'],
-  ['G', 'A', 'E', 'E', 'E', 'E', 'E', 'E', 'P', 'G'],
-  ['G', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'G', 'G'],
-  ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'A', 'G', 'G'],
-  ['G', 'E', 'E', 'E', 'E', 'E', 'E', 'A', 'E', 'E'],
-  ['G', 'E', 'A', 'A', 'A', 'E', 'E', 'A', 'A', 'A']
+    ["G", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G"],
+    ["G", "A", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "A", "G", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
+    ["G", "A", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "P", "A", "G", "A", "P", "P", "P", "P", "P", "P", "P", "P", "G", "G", "G", "G", "G", "G", "G", "G", "E", "E", "E", "A", "E", "E", "P", "P", "G"],
+    ["G", "A", "E", "E", "E", "E", "E", "P", "P", "P", "P", "P", "E", "P", "A", "A", "A", "P", "E", "E", "E", "E", "E", "E", "P", "G", "G", "G", "G", "G", "G", "G", "P", "E", "E", "E", "A", "E", "E", "P", "P", "G"],
+    ["G", "A", "E", "P", "P", "P", "P", "P", "P", "E", "E", "E", "E", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "E", "P", "G", "G", "G", "P", "P", "P", "P", "P", "E", "A", "A", "A", "A", "E", "P", "P", "G"],
+    ["G", "A", "E", "E", "E", "E", "E", "E", "P", "G", "G", "G", "G", "G", "G", "G", "G", "G", "E", "P", "P", "P", "P", "E", "P", "G", "G", "G", "G", "G", "G", "G", "P", "E", "E", "E", "E", "E", "E", "P", "P", "G"],
+    ["G", "A", "A", "A", "A", "A", "A", "A", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "E", "E", "E", "E", "E", "E", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "G"],
+    ["G", "G", "G", "G", "G", "G", "G", "A", "G", "G", "G", "G", "G", "G", "G", "A", "A", "A", "A", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "G"],
+    ["G", "E", "E", "E", "E", "E", "E", "A", "E", "E", "E", "E", "E", "E", "E", "A", "E", "G", "G", "G", "G", "G", "G", "G", "G", "G", "E", "E", "E", "E", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G"],
+    ["G", "E", "A", "A", "A", "E", "E", "A", "A", "A", "E", "A", "A", "A", "E", "A", "E", "G", "G", "T", "T", "T", "T", "G", "G", "G", "E", "E", "E", "E", "G", "G", "G", "P", "P", "P", "P", "P", "P", "P", "P", "G"],
+    ["G", "E", "A", "E", "A", "E", "E", "A", "E", "A", "E", "A", "E", "A", "E", "A", "E", "G", "G", "T", "G", "G", "T", "P", "P", "P", "G", "G", "G", "G", "P", "P", "P", "P", "G", "G", "G", "G", "G", "G", "P", "G"],
+    ["G", "E", "A", "E", "A", "E", "E", "A", "E", "A", "E", "A", "E", "A", "E", "A", "E", "G", "G", "T", "G", "G", "T", "G", "T", "T", "T", "G", "G", "T", "T", "T", "G", "P", "G", "G", "G", "G", "G", "G", "P", "G"],
+    ["G", "E", "A", "E", "A", "E", "E", "A", "E", "A", "E", "A", "E", "A", "E", "A", "E", "G", "G", "T", "G", "G", "T", "G", "G", "P", "P", "P", "P", "P", "P", "G", "G", "P", "G", "G", "G", "G", "G", "G", "P", "G"],
+    ["G", "E", "A", "E", "A", "E", "E", "A", "E", "A", "E", "A", "E", "A", "E", "A", "E", "G", "P", "T", "G", "G", "T", "G", "A", "A", "A", "A", "A", "A", "A", "A", "A", "P", "P", "P", "P", "P", "P", "G", "P", "G"],
+    ["G", "E", "A", "E", "A", "A", "A", "A", "E", "A", "A", "A", "E", "A", "A", "A", "E", "G", "P", "T", "T", "T", "T", "G", "A", "G", "G", "G", "G", "G", "G", "G", "G", "P", "G", "G", "G", "G", "G", "G", "P", "G"],
+    ["G", "E", "A", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "G", "P", "G", "G", "G", "G", "G", "A", "G", "G", "G", "G", "G", "G", "G", "G", "P", "G", "G", "G", "G", "G", "G", "P", "G"],
+    ["G", "G", "A", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "P", "P", "P", "P", "P", "G", "A", "G", "G", "G", "G", "G", "G", "G", "G", "P", "G", "G", "G", "G", "G", "G", "P", "G"],
+    ["G", "G", "A", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "A", "G", "G", "G", "G", "G", "G", "G", "G", "P", "P", "P", "P", "P", "P", "P", "P", "G"],
+    ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "G", "G", "G", "G", "G", "G", "G", "G"],
+    ["T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "A", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G"],
+    ["T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "A", "E", "E", "G", "G", "E", "E", "G", "E", "E", "G", "G", "E", "E", "G", "G", "G", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T"],
+    ["T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "A", "E", "E", "G", "G", "E", "E", "P", "E", "E", "G", "G", "E", "E", "G", "G", "G", "T", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "T"],
+    ["T", "T", "T", "T", "G", "G", "G", "G", "G", "T", "T", "T", "T", "A", "E", "E", "G", "G", "E", "E", "P", "E", "E", "G", "G", "E", "E", "G", "G", "G", "T", "P", "T", "T", "T", "T", "T", "T", "T", "T", "P", "T"],
+    ["T", "T", "T", "T", "G", "G", "G", "G", "G", "T", "T", "T", "T", "A", "E", "E", "G", "G", "E", "E", "P", "E", "E", "G", "G", "E", "E", "G", "G", "G", "T", "P", "T", "P", "P", "P", "P", "P", "P", "T", "P", "T"],
+    ["T", "T", "T", "T", "G", "G", "G", "G", "G", "T", "T", "T", "T", "A", "P", "P", "P", "P", "P", "P", "X", "P", "P", "P", "P", "P", "P", "G", "G", "G", "T", "P", "T", "P", "E", "E", "E", "E", "P", "T", "P", "T"],
+    ["T", "T", "T", "T", "G", "G", "G", "G", "G", "T", "T", "T", "T", "A", "E", "E", "G", "G", "E", "E", "P", "E", "E", "G", "G", "E", "E", "G", "G", "G", "T", "P", "T", "P", "E", "E", "E", "E", "T", "T", "P", "T"],
+    ["T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "A", "E", "E", "G", "G", "E", "E", "P", "E", "E", "G", "G", "E", "E", "G", "G", "G", "T", "P", "T", "P", "P", "P", "P", "P", "P", "P", "P", "T"],
+    ["T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "A", "E", "E", "G", "G", "E", "E", "P", "E", "E", "G", "G", "E", "E", "G", "G", "G", "T", "P", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T"],
+    ["T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "A", "E", "E", "G", "G", "E", "E", "G", "E", "E", "G", "G", "E", "E", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G"],
+    ["A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"],
+    ["G", "G", "G", "G", "G", "P", "P", "P", "P", "P", "G", "G", "G", "P", "G", "G", "G", "P", "G", "G", "G", "P", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "E", "E", "E", "G", "G"],
+    ["G", "E", "E", "E", "G", "P", "G", "G", "G", "P", "G", "G", "G", "P", "G", "G", "G", "P", "G", "G", "G", "P", "G", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "G", "G", "G", "G", "E", "E", "E", "G", "G"],
+    ["G", "E", "E", "E", "G", "P", "G", "P", "G", "P", "G", "P", "G", "P", "G", "P", "G", "P", "G", "P", "G", "P", "G", "G", "G", "G", "G", "E", "E", "E", "E", "E", "E", "G", "G", "G", "G", "E", "E", "E", "G", "G"],
+    ["G", "E", "E", "E", "G", "P", "G", "G", "G", "P", "G", "P", "G", "P", "G", "P", "G", "P", "G", "P", "G", "P", "G", "G", "G", "G", "G", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "T"],
+    ["G", "G", "G", "G", "G", "P", "P", "P", "P", "P", "G", "P", "G", "G", "G", "P", "G", "G", "G", "P", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G"],
+    ["G", "E", "E", "E", "G", "G", "G", "G", "G", "G", "G", "P", "G", "G", "G", "P", "G", "G", "G", "P", "G", "G", "G", "G", "G", "G", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "G", "G", "G", "G", "G"],
+    ["G", "E", "E", "E", "G", "T", "T", "T", "T", "G", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "G", "G", "P", "E", "E", "G", "G", "G", "G", "G", "G", "G", "P", "G", "G", "G", "G", "G"],
+    ["G", "E", "E", "E", "G", "T", "T", "T", "T", "G", "E", "A", "A", "A", "A", "A", "A", "A", "A", "E", "E", "E", "E", "E", "G", "G", "P", "E", "E", "G", "G", "E", "E", "E", "E", "E", "P", "G", "A", "A", "A", "A"],
+    ["G", "G", "G", "G", "G", "P", "P", "P", "P", "G", "E", "A", "E", "E", "E", "E", "E", "E", "A", "A", "A", "A", "A", "E", "G", "G", "P", "E", "E", "G", "G", "E", "E", "E", "E", "E", "P", "G", "P", "P", "P", "P"],
+    ["G", "E", "E", "E", "G", "T", "T", "T", "T", "G", "E", "A", "A", "A", "E", "A", "A", "A", "A", "E", "E", "E", "E", "E", "G", "G", "P", "E", "E", "G", "G", "E", "E", "E", "E", "E", "P", "G", "E", "E", "E", "E"],
+    ["G", "E", "E", "E", "G", "T", "T", "T", "T", "G", "E", "E", "E", "A", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "G", "G", "P", "E", "E", "G", "G", "G", "G", "G", "G", "G", "P", "G", "A", "A", "A", "A"],
+    ["G", "E", "E", "E", "G", "G", "G", "G", "G", "G", "G", "G", "G", "A", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P", "G", "G", "G", "G", "T"]
 ]
 
 
@@ -91,13 +124,13 @@ import heapq
 class PriorityQueue:
     def __init__(self):
         self.elements = []
-    
+
     def empty(self):
         return len(self.elements) == 0
-    
+
     def put(self, item, priority):
         heapq.heappush(self.elements, (priority, item))
-    
+
     def get(self):
         return heapq.heappop(self.elements)[1]
 
@@ -123,13 +156,13 @@ def a_star_search(graph, start, goal):
     cost_so_far = {}
     came_from[start] = None
     cost_so_far[start] = 0
-    
+
     while not frontier.empty():
         current = frontier.get()
-        
+
         if current == goal:
             break
-        
+
         for next in graph.neighbors(current):
             new_cost = cost_so_far[current] + graph.cost(current, next)
             if next not in cost_so_far or new_cost < cost_so_far[next]:
@@ -137,7 +170,7 @@ def a_star_search(graph, start, goal):
                 priority = new_cost + heuristic(goal, next)
                 frontier.put(next, priority)
                 came_from[next] = current
-    
+
     return came_from, cost_so_far
 
 
