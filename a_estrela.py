@@ -102,7 +102,7 @@ matriz = [
 ]
 
 
-diagram = GridWithWeights(10, 10)
+diagram = GridWithWeights(42, 42)
 diagram.walls = []
 diagram.weights = {}
 
@@ -174,7 +174,7 @@ def a_star_search(graph, start, goal):
     return came_from, cost_so_far
 
 
-start, goal = (0, 0), (3, 4)
+start, goal = (21, 25), (3, 4)
 came_from, cost_so_far = a_star_search(diagram, start, goal)
 draw_grid(diagram, width=3, point_to=came_from, start=start, goal=goal)  # Atualizando as letras pelo peso em custos
 print()

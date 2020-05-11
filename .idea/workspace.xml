@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6bf89c4c-139f-4277-9589-9f72e05818bd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/a_estrela.py" beforeDir="false" afterPath="$PROJECT_DIR$/a_estrela.py" afterDir="false" />
     </list>
@@ -40,7 +39,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.teste">
+  <component name="RunManager" selected="Python.a_estrela">
     <configuration name="a_estrela" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Busca heuristica - 2020" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -85,8 +84,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.teste" />
         <item itemvalue="Python.a_estrela" />
+        <item itemvalue="Python.teste" />
       </list>
     </recent_temporary>
   </component>
