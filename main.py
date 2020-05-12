@@ -256,7 +256,7 @@ while(termina != 4):  # Gera as pessoas para a matriz
         if (goal in agente):
 
             termina += 1
-            print("agente achou a pessoa {0} de 3 , achado na pos {1}".format(termina, goal))
+            print("agente convenceu a pessoa {0} de 3 a pegar o seu alcool gel , achado na pos {1}".format(termina, goal))
 
         start = goal
 
@@ -271,7 +271,7 @@ while(termina != 4):  # Gera as pessoas para a matriz
 
                     print()
                     print("Custo: {}".format(soma))
-                    print("agente achou a pessoa {0} de  3 , achado na pos {1}".format(termina,goal))
+                    print("agente convenceu a pessoa {0} de 3 a pegar o seu alcool gel, achado na pos {1}".format(termina,goal))
                     print()
                     termina += 1
                     start = goal
