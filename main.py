@@ -57,8 +57,6 @@ class Mapa():
                     elemento = 3
                 elif (agrupa[count] == "T"):
                     elemento = 6
-                elif (agrupa[count] == "E"):
-                    elemento = 0
                 count += 1
                 self.matriz[(i,j)] = elemento
 
@@ -102,10 +100,7 @@ def draw_grid(graph, agente , width=2, **style):
     count=0
     for y in range(graph.height):
         for x in range(graph.width):
-            if((x,y) in agente):
-                print("%%-%ds" % width % draw_tile(graph, (x, y), style, width,"F"), end="")
-            else:
-                print("%%-%ds" % width % draw_tile(graph, (x, y), style, width, agrupa[count]), end="")
+            print("%%-%ds" % width % draw_tile(graph, (x, y), style, width, agrupa[count]), end="")
             count+=1
         print()
 
@@ -125,13 +120,11 @@ class SquareGrid:
 
     def neighbors(self, id):
         (x, y) = id
-        results = [(x + 1, y), (x, y - 1), (x - 1, y), (x, y + 1)]
-        if (x + y) % 2 == 0: results.reverse()  # aesthetics
+        results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1)]
+        if (x + y) % 2 == 0: results.reverse() # aesthetics
         results = filter(self.in_bounds, results)
         results = filter(self.passable, results)
         return results
-
-
 
 class GridWithWeights(SquareGrid):
     def __init__(self, width, height):
@@ -145,11 +138,6 @@ mapa = Mapa('mapa.txt')
 matriz = mapa.gera_mapa(42,42)
 diagram = GridWithWeights(42, 42)
 contador = 0
-
-
-
-print(matriz)
-
 diagram.weights = matriz
 
 
@@ -256,7 +244,7 @@ while(termina != 4):  # Gera as pessoas para a matriz
         if (goal in agente):
 
             termina += 1
-            print("agente convenceu a pessoa {0} de 3 a pegar o seu alcool gel , achado na pos {1}".format(termina, goal))
+            print("O agente convenceu a pessoa {0} na posição {1} a ir para casa".format(termina, goal))
 
         start = goal
 
@@ -271,7 +259,7 @@ while(termina != 4):  # Gera as pessoas para a matriz
 
                     print()
                     print("Custo: {}".format(soma))
-                    print("agente convenceu a pessoa {0} de 3 a pegar o seu alcool gel, achado na pos {1}".format(termina,goal))
+                    print("O agente convenceu a pessoa {0} na posição {1} a ir para casa".format(termina,goal))
                     print()
                     termina += 1
                     start = goal
