@@ -1,5 +1,5 @@
-import random
 import heapq
+import random
 
 
 class PriorityQueue:
@@ -15,41 +15,42 @@ class PriorityQueue:
     def get(self):
         return heapq.heappop(self.elements)[1]
 
+
 class Agente():
     def __init__(self):
         self.agente = []
+
     def cria_agente(self):
         for i in range(3):  # Gera as pessoas a procura de alcool gel para a matriz
             x = random.randint(0, 41)  # sorteia a coluna
             y = random.randint(0, 41)  # sorteia a linha
             self.agente.append((x, y))
+
     def pega_agente(self):
         return self.agente
 
 
 class Mapa():
 
-    def __init__(self,caminho):
-        self.arq = open(caminho, 'r')         # abre o arquivo
-        self.matriz = {} # declaro o vetor 2
+    def __init__(self, caminho):
+        self.arq = open(caminho, 'r')  # abre o arquivo
+        self.matriz = {}  # declaro o vetor 2
 
-
-    def gera_mapa(self,n_colunas,n_linhas):
-        count = 0 # inicia contador
-        agrupa = "" #inicia var para agrupar as letras da lista
+    def gera_mapa(self, n_colunas, n_linhas):
+        count = 0  # inicia contador
+        agrupa = ""  # inicia var para agrupar as letras da lista
         lista = self.arq.read().split("\n")
 
-        while(len(lista) != count):
-
+        while (len(lista) != count):
             agrupa += lista[count]
-            count+=1
+            count += 1
 
         count = 0
         matrizaux = {}
-        for i in range(0,n_colunas):
+        for i in range(0, n_colunas):
             temp = {}
-            for j in range(0,n_linhas):
-                if(agrupa[count] == "G"):
+            for j in range(0, n_linhas):
+                if (agrupa[count] == "G"):
                     elemento = 10
                 elif (agrupa[count] == "A"):
                     elemento = 1
@@ -58,18 +59,16 @@ class Mapa():
                 elif (agrupa[count] == "T"):
                     elemento = 6
                 count += 1
-                self.matriz[(i,j)] = elemento
+                self.matriz[(i, j)] = elemento
 
         return self.matriz
-
 
 
 def from_id_width(id, width):
     return (id % width, id // width)
 
 
-def draw_tile(graph, id, style, width,valor):
-
+def draw_tile(graph, id, style, width, valor):
     r = valor
     if 'number' in style and id in style['number']: r = "%d" % style['number'][id]
     if 'point_to' in style and style['point_to'].get(id, None) is not None:
@@ -79,15 +78,14 @@ def draw_tile(graph, id, style, width,valor):
         if x2 == x1 - 1: r = "<"
         if y2 == y1 + 1: r = "v"
         if y2 == y1 - 1: r = "^"
-    if 'start' in style and id == style['start']: r = "X"    # Origem
-    if 'goal' in style and id == style['goal']: r = "Z"      # Destino
-    if 'path' in style and id in style['path']: r = "@"      # Caminho executo desde a Origem até o destino
-    if id in graph.walls: r = "#" * width                    # Desenhando os muros ( Edificios )
+    if 'start' in style and id == style['start']: r = "X"  # Origem
+    if 'goal' in style and id == style['goal']: r = "Z"  # Destino
+    if 'path' in style and id in style['path']: r = "@"  # Caminho executo desde a Origem até o destino
+    if id in graph.walls: r = "#" * width  # Desenhando os muros ( Edificios )
     return r
 
 
-
-def draw_grid(graph, agente , width=2, **style):
+def draw_grid(graph, agente, width=2, **style):
     arquivo = open('mapa.txt', 'r')
 
     count = 0  # inicia contador
@@ -96,12 +94,12 @@ def draw_grid(graph, agente , width=2, **style):
 
     while (len(lista) != count):  # loop para agrupamento dos caracteres
         agrupa += lista[count]
-        count+=1
-    count=0
+        count += 1
+    count = 0
     for y in range(graph.height):
         for x in range(graph.width):
             print("%%-%ds" % width % draw_tile(graph, (x, y), style, width, agrupa[count]), end="")
-            count+=1
+            count += 1
         print()
 
 
@@ -120,11 +118,12 @@ class SquareGrid:
 
     def neighbors(self, id):
         (x, y) = id
-        results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1)]
-        if (x + y) % 2 == 0: results.reverse() # aesthetics
+        results = [(x + 1, y), (x, y - 1), (x - 1, y), (x, y + 1)]
+        if (x + y) % 2 == 0: results.reverse()  # aesthetics
         results = filter(self.in_bounds, results)
         results = filter(self.passable, results)
         return results
+
 
 class GridWithWeights(SquareGrid):
     def __init__(self, width, height):
@@ -134,8 +133,9 @@ class GridWithWeights(SquareGrid):
     def cost(self, from_node, to_node):
         return self.weights.get(to_node, 1)
 
+
 mapa = Mapa('mapa.txt')
-matriz = mapa.gera_mapa(42,42)
+matriz = mapa.gera_mapa(42, 42)
 diagram = GridWithWeights(42, 42)
 contador = 0
 diagram.weights = matriz
@@ -208,62 +208,61 @@ def a_star_search(graph, start, goal):
     return came_from, cost_so_far
 
 
-
 cria_agente = Agente()
 cria_agente.cria_agente()
 
 agente = cria_agente.pega_agente()
 termina = 0
 verifica = []
-a = 21
-b = 25
+a = 21  # linha
+b = 25  # coluna
 sorteado = []
 termina = 1
-start = (a, b)
-
+start = (a, b)  # posicao inicial [21,25]
+alcool = random.choice([True, False])
+frasco = 3
 soma = 0
 
-while(termina != 4):  # Gera as pessoas para a matriz
-
+while (termina != 4):  # Gera as pessoas para a matriz
 
     x = random.randint(0, 41)  # sorteia a coluna
     y = random.randint(0, 41)  # sorteia a linha
     goal = (x, y)
 
-
-    if(goal not in sorteado):
+    if (goal not in sorteado):
 
         came_from, cost_so_far = a_star_search(diagram, start, goal)
         draw_grid(diagram, agente, width=4, number=cost_so_far, start=start, goal=goal)
-        soma+=cost_so_far[goal]
-
+        soma += cost_so_far[goal]
 
         print()
         print("Custo: {}".format(soma))
         print()
         if (goal in agente):
-
             termina += 1
-            print("O agente convenceu a pessoa {0} na posição {1} a ir para casa".format(termina, goal))
 
         start = goal
 
-        for i in range(x+4):
-            for j in range(y+4):
-                verifica.append((i,j));
-                if((i,j) in agente):
-                    goal = (i,j)
+        for i in range(x + 4):
+            for j in range(y + 4):
+                verifica.append((i, j));
+                if ((i, j) in agente):
+                    goal = (i, j)
                     came_from, cost_so_far = a_star_search(diagram, start, goal)
                     draw_grid(diagram, agente, width=4, number=cost_so_far, start=start, goal=goal)
-                    soma+= cost_so_far[goal]
+                    soma += cost_so_far[goal]
 
                     print()
                     print("Custo: {}".format(soma))
-                    print("O agente convenceu a pessoa {0} na posição {1} a ir para casa".format(termina,goal))
+                    if alcool is True:
+                        frasco -= 1
+                        print(
+                            "O agente convenceu a pessoa {0} na posição {1} a pegar o alcool gel e ir para casa".format(
+                                termina, goal))
+                        termina += 1
+                        start = goal
+                        agente.remove(goal)
+                    elif alcool is False:
+                        print("O agente nao convenceu a pessoa")
                     print()
-                    termina += 1
-                    start = goal
-                    agente.remove(goal)
-                    sorteado.append(goal)
-
         sorteado.append(goal)
