@@ -219,7 +219,6 @@ b = 25  # coluna
 sorteado = []
 termina = 1
 start = (a, b)  # posicao inicial [21,25]
-alcool = random.choice([True, False])
 frasco = 3
 soma = 0
 
@@ -230,7 +229,7 @@ while (termina != 4):  # Gera as pessoas para a matriz
     goal = (x, y)
 
     if (goal not in sorteado):
-
+        alcool = random.choice([True, False])
         came_from, cost_so_far = a_star_search(diagram, start, goal)
         draw_grid(diagram, agente, width=4, number=cost_so_far, start=start, goal=goal)
         soma += cost_so_far[goal]
