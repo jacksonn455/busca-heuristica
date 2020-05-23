@@ -253,8 +253,8 @@ while (termina != 4):  # Gera as pessoas para a matriz
 
                     print()
                     print("Custo: {}".format(soma))
-                    if alcool is True:
-                        frasco -= 1
+                    if alcool is True:  # Se a pessoa aceita o frasco de alcool gel
+                        frasco -= 1  # diminui um frasco do agente
                         print(
                             "O agente convenceu a pessoa {0} na posição {1} a pegar o alcool gel e ir para casa".format(
                                 termina, goal))
