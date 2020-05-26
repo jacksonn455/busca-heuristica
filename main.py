@@ -58,6 +58,8 @@ class Mapa():
                     elemento = 3
                 elif (agrupa[count] == "T"):
                     elemento = 6
+                elif (agrupa[count] == "#"):
+                    elemento = 0
                 count += 1
                 self.matriz[(i, j)] = elemento
 
