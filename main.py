@@ -1,21 +1,6 @@
 import heapq
 import random
 
-
-class PriorityQueue:
-    def __init__(self):
-        self.elements = []
-
-    def empty(self):
-        return len(self.elements) == 0
-
-    def put(self, item, priority):
-        heapq.heappush(self.elements, (priority, item))
-
-    def get(self):
-        return heapq.heappop(self.elements)[1]
-
-
 class Agente():
     def __init__(self):
         self.agente = []
@@ -30,48 +15,12 @@ class Agente():
         return self.agente
 
 
-class Mapa():
-
-    def __init__(self, caminho):
-        self.arq = open(caminho, 'r')  # abre o arquivo
-        self.matriz = {}  # declaro o vetor 2
-
-    def gera_mapa(self, n_colunas, n_linhas):
-        count = 0  # inicia contador
-        agrupa = ""  # inicia var para agrupar as letras da lista
-        lista = self.arq.read().split("\n")
-
-        while (len(lista) != count):
-            agrupa += lista[count]
-            count += 1
-
-        count = 0
-        matrizaux = {}
-        for i in range(0, n_colunas):
-            temp = {}
-            for j in range(0, n_linhas):
-                if (agrupa[count] == "G"):
-                    elemento = 10
-                elif (agrupa[count] == "A"):
-                    elemento = 1
-                elif (agrupa[count] == "P"):
-                    elemento = 3
-                elif (agrupa[count] == "T"):
-                    elemento = 6
-                elif (agrupa[count] == "#"):
-                    elemento = 0
-                count += 1
-                self.matriz[(i, j)] = elemento
-
-        return self.matriz
-
-
 def from_id_width(id, width):
     return (id % width, id // width)
 
 
-def draw_tile(graph, id, style, width, valor):
-    r = valor
+def draw_tile(graph, id, style, width):
+    r = "."
     if 'number' in style and id in style['number']: r = "%d" % style['number'][id]
     if 'point_to' in style and style['point_to'].get(id, None) is not None:
         (x1, y1) = id
@@ -80,29 +29,19 @@ def draw_tile(graph, id, style, width, valor):
         if x2 == x1 - 1: r = "<"
         if y2 == y1 + 1: r = "v"
         if y2 == y1 - 1: r = "^"
-    if 'start' in style and id == style['start']: r = "X"  # Origem
-    if 'goal' in style and id == style['goal']: r = "Z"  # Destino
-    if 'path' in style and id in style['path']: r = "@"  # Caminho executo desde a Origem até o destino
-    if id in graph.walls: r = "#" * width  # Desenhando os muros ( Edificios )
+    if 'start' in style and id == style['start']: r = "A"
+    if 'goal' in style and id == style['goal']: r = "Z"
+    if 'path' in style and id in style['path']: r = "@"
+    if id in graph.walls: r = "#" * width
     return r
 
 
-def draw_grid(graph, agente, width=2, **style):
-    arquivo = open('mapa.txt', 'r')
-
-    count = 0  # inicia contador
-    agrupa = ""  # inicia var para agrupar as letras da lista
-    lista = arquivo.read().split("\n")  # le as linhas do arquivo cortando nas quebras de lihas
-
-    while (len(lista) != count):  # loop para agrupamento dos caracteres
-        agrupa += lista[count]
-        count += 1
-    count = 0
+def draw_grid(graph, width=2, **style):
     for y in range(graph.height):
         for x in range(graph.width):
-            print("%%-%ds" % width % draw_tile(graph, (x, y), style, width, agrupa[count]), end="")
-            count += 1
+            print("%%-%ds" % width % draw_tile(graph, (x, y), style, width), end="")
         print()
+
 
 
 class SquareGrid:
@@ -136,11 +75,109 @@ class GridWithWeights(SquareGrid):
         return self.weights.get(to_node, 1)
 
 
-mapa = Mapa('mapa.txt')
-matriz = mapa.gera_mapa(42, 42)
+matriz = [
+    ['G', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
+     'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+    ['G', 'A', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'A', 'G', 'A', 'A', 'A', 'A', 'A', 'A', 'A',
+     'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A'],
+    ['G', 'A', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'P', 'A', 'G', 'A', 'P', 'P', 'P', 'P', 'P', 'P',
+     'P', 'P', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'E', 'E', 'E', 'A', 'E', 'E', 'P', 'P', 'G'],
+    ['G', 'A', 'E', 'E', 'E', 'E', 'E', 'P', 'P', 'P', 'P', 'P', 'E', 'P', 'A', 'A', 'A', 'P', 'E', 'E', 'E', 'E', 'E',
+     'E', 'P', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'E', 'E', 'E', 'A', 'E', 'E', 'P', 'P', 'G'],
+    ['G', 'A', 'E', 'P', 'P', 'P', 'P', 'P', 'P', 'E', 'E', 'E', 'E', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P',
+     'E', 'P', 'G', 'G', 'G', 'P', 'P', 'P', 'P', 'P', 'E', 'A', 'A', 'A', 'A', 'E', 'P', 'P', 'G'],
+    ['G', 'A', 'E', 'E', 'E', 'E', 'E', 'E', 'P', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'E', 'P', 'P', 'P', 'P',
+     'E', 'P', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'E', 'E', 'E', 'E', 'E', 'E', 'P', 'P', 'G'],
+    ['G', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'E', 'E', 'E', 'E', 'E',
+     'E', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'G'],
+    ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'A', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'A', 'A', 'A', 'A', 'T', 'T', 'T', 'T',
+     'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'G'],
+    ['G', 'E', 'E', 'E', 'E', 'E', 'E', 'A', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'A', 'E', 'G', 'G', 'G', 'G', 'G', 'G',
+     'G', 'G', 'G', 'E', 'E', 'E', 'E', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+    ['G', 'E', 'A', 'A', 'A', 'E', 'E', 'A', 'A', 'A', 'E', 'A', 'A', 'A', 'E', 'A', 'E', 'G', 'G', 'T', 'T', 'T', 'T',
+     'G', 'G', 'G', 'E', 'E', 'E', 'E', 'G', 'G', 'G', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'G'],
+    ['G', 'E', 'A', 'E', 'A', 'E', 'E', 'A', 'E', 'A', 'E', 'A', 'E', 'A', 'E', 'A', 'E', 'G', 'G', 'T', 'G', 'G', 'T',
+     'P', 'P', 'P', 'G', 'G', 'G', 'G', 'P', 'P', 'P', 'P', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'G'],
+    ['G', 'E', 'A', 'E', 'A', 'E', 'E', 'A', 'E', 'A', 'E', 'A', 'E', 'A', 'E', 'A', 'E', 'G', 'G', 'T', 'G', 'G', 'T',
+     'G', 'T', 'T', 'T', 'G', 'G', 'T', 'T', 'T', 'G', 'P', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'G'],
+    ['G', 'E', 'A', 'E', 'A', 'E', 'E', 'A', 'E', 'A', 'E', 'A', 'E', 'A', 'E', 'A', 'E', 'G', 'G', 'T', 'G', 'G', 'T',
+     'G', 'G', 'P', 'P', 'P', 'P', 'P', 'P', 'G', 'G', 'P', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'G'],
+    ['G', 'E', 'A', 'E', 'A', 'E', 'E', 'A', 'E', 'A', 'E', 'A', 'E', 'A', 'E', 'A', 'E', 'G', 'P', 'T', 'G', 'G', 'T',
+     'G', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'P', 'P', 'P', 'P', 'P', 'P', 'G', 'P', 'G'],
+    ['G', 'E', 'A', 'E', 'A', 'A', 'A', 'A', 'E', 'A', 'A', 'A', 'E', 'A', 'A', 'A', 'E', 'G', 'P', 'T', 'T', 'T', 'T',
+     'G', 'A', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'G'],
+    ['G', 'E', 'A', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'G', 'P', 'G', 'G', 'G', 'G',
+     'G', 'A', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'G'],
+    ['G', 'G', 'A', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'P', 'P', 'P', 'P',
+     'G', 'A', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'G'],
+    ['G', 'G', 'A', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
+     'G', 'A', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'G'],
+    ['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A',
+     'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+    ['T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'A', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
+     'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+    ['T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'A', 'E', 'E', 'G', 'G', 'E', 'E', 'G', 'E', 'E',
+     'G', 'G', 'E', 'E', 'G', 'G', 'G', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T'],
+    ['T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'A', 'E', 'E', 'G', 'G', 'E', 'E', 'P', 'E', 'E',
+     'G', 'G', 'E', 'E', 'G', 'G', 'G', 'T', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'T'],
+    ['T', 'T', 'T', 'T', 'G', 'G', 'G', 'G', 'G', 'T', 'T', 'T', 'T', 'A', 'E', 'E', 'G', 'G', 'E', 'E', 'P', 'E', 'E',
+     'G', 'G', 'E', 'E', 'G', 'G', 'G', 'T', 'P', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'P', 'T'],
+    ['T', 'T', 'T', 'T', 'G', 'G', 'G', 'G', 'G', 'T', 'T', 'T', 'T', 'A', 'E', 'E', 'G', 'G', 'E', 'E', 'P', 'E', 'E',
+     'G', 'G', 'E', 'E', 'G', 'G', 'G', 'T', 'P', 'T', 'P', 'P', 'P', 'P', 'P', 'P', 'T', 'P', 'T'],
+    ['T', 'T', 'T', 'T', 'G', 'G', 'G', 'G', 'G', 'T', 'T', 'T', 'T', 'A', 'P', 'P', 'P', 'P', 'P', 'P', 'X', 'P', 'P',
+     'P', 'P', 'P', 'P', 'G', 'G', 'G', 'T', 'P', 'T', 'P', 'E', 'E', 'E', 'E', 'P', 'T', 'P', 'T'],
+    ['T', 'T', 'T', 'T', 'G', 'G', 'G', 'G', 'G', 'T', 'T', 'T', 'T', 'A', 'E', 'E', 'G', 'G', 'E', 'E', 'P', 'E', 'E',
+     'G', 'G', 'E', 'E', 'G', 'G', 'G', 'T', 'P', 'T', 'P', 'E', 'E', 'E', 'E', 'T', 'T', 'P', 'T'],
+    ['T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'A', 'E', 'E', 'G', 'G', 'E', 'E', 'P', 'E', 'E',
+     'G', 'G', 'E', 'E', 'G', 'G', 'G', 'T', 'P', 'T', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'T'],
+    ['T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'A', 'E', 'E', 'G', 'G', 'E', 'E', 'P', 'E', 'E',
+     'G', 'G', 'E', 'E', 'G', 'G', 'G', 'T', 'P', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T'],
+    ['T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'A', 'E', 'E', 'G', 'G', 'E', 'E', 'G', 'E', 'E',
+     'G', 'G', 'E', 'E', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+    ['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A',
+     'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A'],
+    ['G', 'G', 'G', 'G', 'G', 'P', 'P', 'P', 'P', 'P', 'G', 'G', 'G', 'P', 'G', 'G', 'G', 'P', 'G', 'G', 'G', 'P', 'G',
+     'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'E', 'E', 'E', 'G', 'G'],
+    ['G', 'E', 'E', 'E', 'G', 'P', 'G', 'G', 'G', 'P', 'G', 'G', 'G', 'P', 'G', 'G', 'G', 'P', 'G', 'G', 'G', 'P', 'G',
+     'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'G', 'G', 'G', 'G', 'E', 'E', 'E', 'G', 'G'],
+    ['G', 'E', 'E', 'E', 'G', 'P', 'G', 'P', 'G', 'P', 'G', 'P', 'G', 'P', 'G', 'P', 'G', 'P', 'G', 'P', 'G', 'P', 'G',
+     'G', 'G', 'G', 'G', 'E', 'E', 'E', 'E', 'E', 'E', 'G', 'G', 'G', 'G', 'E', 'E', 'E', 'G', 'G'],
+    ['G', 'E', 'E', 'E', 'G', 'P', 'G', 'G', 'G', 'P', 'G', 'P', 'G', 'P', 'G', 'P', 'G', 'P', 'G', 'P', 'G', 'P', 'G',
+     'G', 'G', 'G', 'G', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T'],
+    ['G', 'G', 'G', 'G', 'G', 'P', 'P', 'P', 'P', 'P', 'G', 'P', 'G', 'G', 'G', 'P', 'G', 'G', 'G', 'P', 'G', 'G', 'G',
+     'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+    ['G', 'E', 'E', 'E', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'G', 'G', 'G', 'P', 'G', 'G', 'G', 'P', 'G', 'G', 'G',
+     'G', 'G', 'G', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'G', 'G', 'G', 'G', 'G'],
+    ['G', 'E', 'E', 'E', 'G', 'T', 'T', 'T', 'T', 'G', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E',
+     'E', 'G', 'G', 'P', 'E', 'E', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'G', 'G', 'G', 'G', 'G'],
+    ['G', 'E', 'E', 'E', 'G', 'T', 'T', 'T', 'T', 'G', 'E', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'E', 'E', 'E', 'E',
+     'E', 'G', 'G', 'P', 'E', 'E', 'G', 'G', 'E', 'E', 'E', 'E', 'E', 'P', 'G', 'A', 'A', 'A', 'A'],
+    ['G', 'G', 'G', 'G', 'G', 'P', 'P', 'P', 'P', 'G', 'E', 'A', 'E', 'E', 'E', 'E', 'E', 'E', 'A', 'A', 'A', 'A', 'A',
+     'E', 'G', 'G', 'P', 'E', 'E', 'G', 'G', 'E', 'E', 'E', 'E', 'E', 'P', 'G', 'P', 'P', 'P', 'P'],
+    ['G', 'E', 'E', 'E', 'G', 'T', 'T', 'T', 'T', 'G', 'E', 'A', 'A', 'A', 'E', 'A', 'A', 'A', 'A', 'E', 'E', 'E', 'E',
+     'E', 'G', 'G', 'P', 'E', 'E', 'G', 'G', 'E', 'E', 'E', 'E', 'E', 'P', 'G', 'E', 'E', 'E', 'E'],
+    ['G', 'E', 'E', 'E', 'G', 'T', 'T', 'T', 'T', 'G', 'E', 'E', 'E', 'A', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E',
+     'E', 'G', 'G', 'P', 'E', 'E', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'P', 'G', 'A', 'A', 'A', 'A'],
+    ['G', 'E', 'E', 'E', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'A', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
+     'G', 'G', 'G', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'G', 'G', 'G', 'G', 'T']
+]
+
 diagram = GridWithWeights(42, 42)
-contador = 0
-diagram.weights = matriz
+diagram.walls = []
+diagram.weights = {}
+
+for i in range(10):
+    for j in range(10):
+        if matriz[i][j] == 'E':
+            diagram.walls.append((j, i))
+        elif matriz[i][j] == 'A':
+            diagram.weights[(j, i)] = 1
+        elif matriz[i][j] == 'P':
+            diagram.weights[(j, i)] = 3
+        elif matriz[i][j] == 'T':
+            diagram.weights[(j, i)] = 6
+        elif matriz[i][j] == 'G':
+            diagram.weights[(j, i)] = 10
 
 
 def dijkstra_search(graph, start, goal):
@@ -166,6 +203,19 @@ def dijkstra_search(graph, start, goal):
                 came_from[next] = current
 
     return came_from, cost_so_far
+
+class PriorityQueue:
+    def __init__(self):
+        self.elements = []
+
+    def empty(self):
+        return len(self.elements) == 0
+
+    def put(self, item, priority):
+        heapq.heappush(self.elements, (priority, item))
+
+    def get(self):
+        return heapq.heappop(self.elements)[1]
 
 
 def reconstruct_path(came_from, start, goal):
@@ -210,14 +260,15 @@ def a_star_search(graph, start, goal):
     return came_from, cost_so_far
 
 
+
 cria_agente = Agente()
 cria_agente.cria_agente()
 
 agente = cria_agente.pega_agente()
 termina = 0
 verifica = []
-a = 21  # linha
-b = 25  # coluna
+a = 20  # linha 21, começando do 0
+b = 24  # coluna 25, começando do 0
 sorteado = []
 termina = 1
 start = (a, b)  # posicao inicial [21,25]
@@ -233,7 +284,10 @@ while (termina != 4):  # Gera as pessoas para a matriz
     if (goal not in sorteado):
         alcool = random.choice([True, False])
         came_from, cost_so_far = a_star_search(diagram, start, goal)
-        draw_grid(diagram, agente, width=4, number=cost_so_far, start=start, goal=goal)
+        draw_grid(diagram, width=4, point_to=came_from, start=start, goal=goal)
+        print()
+        draw_grid(diagram, width=4, number=cost_so_far, start=start, goal=goal)
+        print()
         soma += cost_so_far[goal]
 
         print()
@@ -250,7 +304,10 @@ while (termina != 4):  # Gera as pessoas para a matriz
                 if ((i, j) in agente):
                     goal = (i, j)
                     came_from, cost_so_far = a_star_search(diagram, start, goal)
-                    draw_grid(diagram, agente, width=4, number=cost_so_far, start=start, goal=goal)
+                    draw_grid(diagram, width=4, point_to=came_from, start=start, goal=goal)
+                    print()
+                    draw_grid(diagram, width=4, number=cost_so_far, start=start, goal=goal)
+                    print()
                     soma += cost_so_far[goal]
 
                     print()
