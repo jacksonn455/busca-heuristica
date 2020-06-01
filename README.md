@@ -5,6 +5,7 @@ Busca Heurística
 
   | [<img src="https://avatars1.githubusercontent.com/u/46221221?s=460&u=0d161e390cdad66e925f3d52cece6c3e65a23eb2&v=4" width=115><br><sub>Jackson Magnabosco</sub>](https://github.com/jacksonn455) | [<img src="https://scontent.ferm2-1.fna.fbcdn.net/v/t1.0-1/p160x160/22491625_1445244322239553_4539298653893602379_n.jpg?_nc_cat=108&_nc_sid=dbb9e7&_nc_ohc=UtKMf_FuUb4AX8yje8o&_nc_ht=scontent.ferm2-1.fna&_nc_tp=6&oh=bbda905374f89388b3bbb13e40636e22&oe=5EFBFB89" width=115><br><sub>Alvaro Costa</sub>](https://pt-br.facebook.com/alvaroluis.costa) |
   | :---: | :---: |
+--------------------
 
 - Com a pandemia do Covid-19, a tarefa mais difícil está em convencer as pessoas a ficarem em casa,
 especialmente se elas não possuírem álcool gel. A fim de evitar um número maior de pessoas na rua,
