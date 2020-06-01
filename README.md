@@ -80,6 +80,7 @@ movimenta pelo mapa e também o custo final ao terminar a execução.
 - O programa deve ser apresentado durante a aula por todos os membros do grupo. Se algum
 dos membros do grupo não comparecer ou não souber explicar nada sobre a implementação
 receberá nota zero.
+--------------------
 
 Dicas:
 =======================
