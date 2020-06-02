@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Busca heuristica - 2020.iml" filepath="$PROJECT_DIR$/.idea/Busca heuristica - 2020.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../busca1/.idea/busca.iml" filepath="$PROJECT_DIR$/../busca1/.idea/busca.iml" />
     </modules>
   </component>
 </project>
